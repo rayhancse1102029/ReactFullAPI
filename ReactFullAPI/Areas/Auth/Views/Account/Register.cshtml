@@ -1,0 +1,221 @@
+﻿
+
+@model RegisterViewModel
+
+@using Microsoft.AspNetCore.Identity
+@using ReactFullAPI.Data.Entity
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Login-POS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="~/assets/images/favicon.ico">
+
+    <!-- App css -->
+    <link href="~/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/icons.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/metisMenu.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/style.css" rel="stylesheet" type="text/css" />
+    
+    <style>
+        .account-body .auth-page-600 {
+            width: 600px !important;
+            position: relative;
+            margin: 0 auto;
+        }
+        .auth-logo {
+            cursor: pointer;
+        }
+        #profile_overlay_id{
+            text-align: center;
+        }
+        #profile_txt_id {
+            text-align: center;
+            color: white;
+            background: rgba(0, 0, 0, 0.6);
+            width: 90px;
+            height: 45px;
+            padding-top: 11px;
+            margin: auto;
+            position: relative;
+            margin-top: -45px;
+            border-bottom-right-radius: 70px;
+            border-bottom-left-radius: 70px;
+        }
+    </style>
+
+</head>
+
+<body class="account-body loginbg">
+
+    <!-- Log In page -->
+    <div class="row vh-100 ">
+        <div class="col-12 align-self-center">
+            <div class="auth-page-600">
+                <div class="card auth-card shadow-lg">
+                    <div class="card-body">
+                        <div class="px-3">
+                            <div class="auth-logo-box">
+                                <div id="profile_overlay_id">
+                                    @*<img src="~/images/upload_img_boy.png" id="preview_default_img_id" style="display: none">*@
+                                    <img src="~/images/upload_img_boy.png" onclick="profileUpdateClickFun()" height="90" alt="logo" id="img_preview_id" class="auth-logo">
+                                    <p id="profile_txt_id" style="cursor: pointer" onclick="profileUpdateClickFun()">
+                                        <span>Upload</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="text-center auth-logo-text">
+                                <h4 class="mt-0 mb-3 mt-5">Create New Account</h4>
+                            </div>
+                            <form class="form-horizontal auth-form my-4" enctype="multipart/form-data" asp-route-returnurl="@ViewData["ReturnUrl"]" asp-area="Auth" asp-controller="Account" asp-action="Register" method="post">
+
+                                <div class="row">
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="username">Fullname</label>
+                                            <div class="input-group mb-3">
+                                                <span class="auth-form-icon">
+                                                    <i class="dripicons-user"></i>
+                                                </span>
+                                                <input type="text" class="form-control" required asp-for="FullName" placeholder="Enter fullname">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="username">Phone</label>
+                                            <div class="input-group mb-3">
+                                                <span class="auth-form-icon">
+                                                    <i class="dripicons-phone"></i>
+                                                </span>
+                                                <input type="text" class="form-control" required asp-for="Phone" placeholder="Enter phone number">
+                                            </div>
+                                        </div> 
+                                    </div>
+                                </div>
+                                @*image field on hidden*@
+                                @*<input type="file" name="img" id="img" style="visibility: hidden; position: absolute" />*@
+                                <div style="display: none">
+                                    <input type="file" name="img" id="img"  />
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="userpassword">Password</label>
+                                            <div class="input-group mb-3">
+                                                <span class="auth-form-icon">
+                                                    <i class="dripicons-lock"></i>
+                                                </span>
+                                                <input type="password" class="form-control" required asp-for="Password" placeholder="Enter password">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="userpassword">Confirm Password</label>
+                                            <div class="input-group mb-3">
+                                                <span class="auth-form-icon">
+                                                    <i class="dripicons-lock"></i>
+                                                </span>
+                                                <input type="password" class="form-control" required asp-for="ConfirmPassword" placeholder="Enter possword again">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row mt-4">
+                                    <div class="col-sm-6">
+                                        <a asp-area="Auth" asp-controller="Account" asp-action="Login" class="text font-13"><i class="dripicons-user"></i> Already Have an Account</a>
+                                    </div>
+                                    <div class="col-sm-6 text-right">
+                                        <a asp-area="" asp-controller="Account" asp-action="ForgotPassword" class="text font-13"><i class="dripicons-lock"></i> Forgot Password?</a>
+                                    </div>
+                                </div>
+
+                                <div class="form-group mb-0 row">
+                                    <div class="col-12 mt-2">
+                                        <button class="btn btn-primary btn-round btn-block waves-effect waves-light" type="submit">Register<i class="fas fa-sign-in-alt ml-1"></i></button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="m-3 text-center text-muted">
+                            <p class="text-danger"> @ViewBag.LoginMessage</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery  -->
+    <script src="~/assets/js/jquery.min.js"></script>
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="~/assets/js/metisMenu.min.js"></script>
+    <script src="~/assets/js/waves.min.js"></script>
+    <script src="~/assets/js/jquery.slimscroll.min.js"></script>
+
+    <!-- App js -->
+    <script src="~/assets/js/app.js"></script>
+    
+<script>
+
+    
+    $(document).ready(function() {
+
+        var _URL = window.URL || window.webkitURL;
+
+        $("#img").change(function () {
+
+            var file, img;
+
+            if ((file = this.files[0])) {
+                img = new Image();
+                img.onload = function () {
+                    readURL(file);
+                };
+                img.onerror = function () {
+                    alert("not a valid file: " + file.type);
+                };
+
+                img.src = _URL.createObjectURL(file);
+
+            }
+
+        });
+
+    })
+
+    function readURL(file) {
+        if (file) {
+            var filerdr = new FileReader();
+            filerdr.onload = function(e) {
+                $('#img_preview_id').attr('src', e.target.result);
+                $("#profile_txt_id").hide();
+            }
+            filerdr.readAsDataURL(file);
+        } else {
+            readDefaultURL();
+        }
+    }
+    function readDefaultURL() {
+        $('#img_preview_id').attr('src', '/images/upload_img_boy.png');
+        $("#profile_txt_id").show();
+    }
+    function profileUpdateClickFun() {
+        $("#img").click();
+    }
+    
+</script>
+
+</body>
+</html>
