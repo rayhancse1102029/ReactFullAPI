@@ -156,5 +156,41 @@ namespace ReactFullAPI.Service.Helper
             }
             return message;
         }
+
+
+        public string SaveUserImageWithFullUrl(out string fileName, IFormFile img)
+        {
+
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp", };
+            string message = "success";
+
+            var extention = Path.GetExtension(img.FileName);
+            fileName = Path.Combine("UploadUserImage", DateTime.Now.Ticks + extention);
+
+            if (img.Length > 10000000)
+            {
+                message = "Select file must be less than 10Μ";
+            }
+            else if (!allowedExtensions.Contains(extention.ToLower()))
+            {
+                message = "Must be jpg, jpeg, png, gif or webp types";
+            }
+            else
+            {
+                var path = Path.Combine(_hostingEnvironment.WebRootPath, fileName);
+                try
+                {
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        img.CopyTo(stream);
+                    }
+                }
+                catch
+                {
+                    message = "can not upload image";
+                }
+            }
+            return message;
+        }
     }
 }

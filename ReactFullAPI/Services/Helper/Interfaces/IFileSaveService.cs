@@ -12,5 +12,6 @@ namespace ReactFullAPI.Service.Helper.Interfaces
         string SaveEmpAttachment(out string fileName, IFormFile file);
         string SaveImage(out string fileName, IFormFile img);
         string SaveUserImage(out string fileName, IFormFile img);
+        string SaveUserImageWithFullUrl(out string fileName, IFormFile img);
     }
 }

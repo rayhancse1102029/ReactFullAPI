@@ -89,7 +89,9 @@ namespace ReactFullAPI.Areas.Auth.Controllers
                 {
                     string fileName;
                     string empFileName = String.Empty;
-                    string message = _fileSave.SaveUserImage(out fileName, model.Img);
+                    string baseUrl = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host;
+
+                    string message = _fileSave.SaveUserImageWithFullUrl(out fileName, model.Img);
 
                     if (message == "success")
                     {
@@ -103,7 +105,7 @@ namespace ReactFullAPI.Areas.Auth.Controllers
                             PhoneNumber = model.Phone,
                             EmployeeCode = await _userService.GenerateEmployeeCode(),
                             //genderId = model.genderId,
-                            ImgUrl = empFileName,
+                            ImgUrl = baseUrl + "/" + empFileName,
                             //Address = model.address,
                             IsVerified = false,
                             IsDeleted = false,
